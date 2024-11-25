@@ -82,6 +82,10 @@ func (s *MC) SetCron(c cron.EntryID) {
 	s.cronEntry = c
 }
 
+func (s *MC) GetConfig() *jobmgmt.JobConfig {
+	return s.currentConfig
+}
+
 func (s *MC) SetConfig(c *jobmgmt.JobConfig) error {
 	s.lock.Lock()
 	defer s.lock.Unlock()
