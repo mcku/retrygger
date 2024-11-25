@@ -127,6 +127,7 @@ func addToCron(engine *cron.Cron, mcItem *MC) error {
 		log, err := mcItem.trigger()
 		if err != nil {
 			mcItem.logWriter(log, jobmgmt.LogRecord_STATUS_FAILED, "cron")
+			return
 		}
 		mcItem.logWriter(log, jobmgmt.LogRecord_STATUS_SUCCESS, "cron")
 	})
