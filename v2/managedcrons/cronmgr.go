@@ -126,10 +126,12 @@ func addToCron(engine *cron.Cron, mcItem *MC) error {
 	cronEntryID, err := engine.AddFunc(mcItem.currentConfig.CronSchedule, func() {
 		log, err := mcItem.trigger("")
 		if err != nil {
-			mcItem.logWriter(log, jobmgmt.LogRecord_STATUS_FAILED, "cron")
+			mcItem.logWriter(log, jobmgmt.LogRecord_STATUS_FAILED, "cron",
+				"")
 			return
 		}
-		mcItem.logWriter(log, jobmgmt.LogRecord_STATUS_SUCCESS, "cron")
+		mcItem.logWriter(log, jobmgmt.LogRecord_STATUS_SUCCESS, "cron",
+			"")
 	})
 	if err != nil {
 		return fmt.Errorf("%s", err.Error())

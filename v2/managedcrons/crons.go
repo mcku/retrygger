@@ -21,7 +21,7 @@ type managedCron interface {
 	GetProviderAddr() string
 	GetName() string
 }
-type logFunc func(log string, status jobmgmt.LogRecord_Status, initiator string) error
+type logFunc func(log string, status jobmgmt.LogRecord_Status, initiator, runtimeParams string) error
 type MC struct {
 	lock          sync.RWMutex
 	cronName      string
