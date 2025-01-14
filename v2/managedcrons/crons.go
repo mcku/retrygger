@@ -47,7 +47,6 @@ func NewManagedCron(
 	currentConfig *jobmgmt.JobConfig,
 	logWriter logFunc,
 	providerAddr string,
-	runtimeParamBuilder func() string,
 ) *MC {
 	return &MC{
 		cronName:      cronName,
