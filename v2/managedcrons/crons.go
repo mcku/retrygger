@@ -27,7 +27,7 @@ type MC struct {
 	cronName      string
 	providerAddr  string
 	cronEntry     cron.EntryID
-	trigger       func(paramStr string) (string, error) // returns an execution log, along with an error
+	trigger       func(paramStr string) (TriggerResult, error) // returns an execution log, along with an error
 	configFetcher func() (*jobmgmt.JobConfig, error)
 	logWriter     logFunc
 	currentConfig *jobmgmt.JobConfig
@@ -35,9 +35,14 @@ type MC struct {
 	runtimeParamBuilder func() string
 }
 
+type TriggerResult struct {
+	ParamStr string `json:"param_str"`
+	Log      string `json:"log"`
+}
+
 func NewManagedCron(
 	cronName string,
-	trigger func(paramStr string) (string, error),
+	trigger func(paramStr string) (TriggerResult, error),
 	configFetcher func() (*jobmgmt.JobConfig, error),
 	currentConfig *jobmgmt.JobConfig,
 	logWriter logFunc,
@@ -45,13 +50,12 @@ func NewManagedCron(
 	runtimeParamBuilder func() string,
 ) *MC {
 	return &MC{
-		cronName:            cronName,
-		trigger:             trigger,
-		configFetcher:       configFetcher,
-		currentConfig:       currentConfig,
-		logWriter:           logWriter,
-		providerAddr:        providerAddr,
-		runtimeParamBuilder: runtimeParamBuilder,
+		cronName:      cronName,
+		trigger:       trigger,
+		configFetcher: configFetcher,
+		currentConfig: currentConfig,
+		logWriter:     logWriter,
+		providerAddr:  providerAddr,
 	}
 }
 
@@ -61,7 +65,7 @@ func (s *MC) GetLogWriter() logFunc {
 	return s.logWriter
 }
 
-func (s *MC) GetTrigger() func(paramStr string) (string, error) {
+func (s *MC) GetTrigger() func(paramStr string) (TriggerResult, error) {
 	s.lock.RLock()
 	defer s.lock.RUnlock()
 	if s == nil {

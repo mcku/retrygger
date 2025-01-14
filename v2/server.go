@@ -45,7 +45,7 @@ func (s *txnJobServer) TriggerJob(ctx context.Context, req *jobmgmt.TriggerJobRe
 	if trigger == nil {
 		return nil, fmt.Errorf("triggerJob: trigger is nil for %s", s.service)
 	}
-	log, err := trigger(req.Params)
+	res, err := trigger(req.Params)
 
 	if s.logSvcAddr != "" {
 
@@ -56,11 +56,11 @@ func (s *txnJobServer) TriggerJob(ctx context.Context, req *jobmgmt.TriggerJobRe
 		logRecord := &jobmgmt.LogRecord{
 			RecordId:     uuid.NewString(),
 			Timestamp:    time.Now().UnixNano(),
-			Message:      log,
+			Message:      res.Log,
 			Service:      req.Service,
 			Job:          req.Job,
 			Status:       status,
-			Params:       req.Params,
+			Params:       res.ParamStr,
 			AckStatus:    false,
 			BuildVersion: s.buildVersion,
 			Initiator:    "manual",
@@ -74,12 +74,12 @@ func (s *txnJobServer) TriggerJob(ctx context.Context, req *jobmgmt.TriggerJobRe
 	if err != nil {
 		return &jobmgmt.TriggerJobResponse{
 			Status:  jobmgmt.JobStatus_JOB_STATUS_HAS_ERRORS,
-			Message: fmt.Sprintf("Error: %s\n Log: %s", err, log),
+			Message: fmt.Sprintf("Error: %s\n Log: %s", err, res),
 		}, nil
 	}
 	return &jobmgmt.TriggerJobResponse{
 		Status:  jobmgmt.JobStatus_JOB_STATUS_SUCCESS,
-		Message: log,
+		Message: res.Log,
 	}, nil
 }
 

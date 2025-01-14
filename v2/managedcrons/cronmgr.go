@@ -124,10 +124,12 @@ func (s *cronManager) AutoReconf(mcItem *MC) error {
 }
 func addToCron(engine *cron.Cron, mcItem *MC) error {
 	cronEntryID, err := engine.AddFunc(mcItem.currentConfig.CronSchedule, func() {
-		log, err := mcItem.trigger("")
+		res, err := mcItem.trigger("")
+		log := res.Log
+		params := res.ParamStr
 		if err != nil {
 			mcItem.logWriter(log, jobmgmt.LogRecord_STATUS_FAILED, "cron",
-				mcItem.runtimeParamBuilder())
+				params)
 			return
 		}
 		mcItem.logWriter(log, jobmgmt.LogRecord_STATUS_SUCCESS, "cron",
