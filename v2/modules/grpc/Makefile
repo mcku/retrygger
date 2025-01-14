@@ -1,7 +1,12 @@
 PROTO_ROOT=./proto
 
 
-all: clean
+all: link clean build unlink
+link: 
+	ln -s ~/proto ./proto
+unlink:
+	unlink ./proto
+build:
 	protoc -I${PROTO_ROOT} \
                --go_out . \
                --go-grpc_out . \

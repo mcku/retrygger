@@ -75,11 +75,13 @@ func (s *txnJobServer) TriggerJob(ctx context.Context, req *jobmgmt.TriggerJobRe
 		return &jobmgmt.TriggerJobResponse{
 			Status:  jobmgmt.JobStatus_JOB_STATUS_HAS_ERRORS,
 			Message: fmt.Sprintf("Error: %s\n Log: %s", err, res),
+			Params:  res.ParamStr,
 		}, nil
 	}
 	return &jobmgmt.TriggerJobResponse{
 		Status:  jobmgmt.JobStatus_JOB_STATUS_SUCCESS,
 		Message: res.Log,
+		Params:  res.ParamStr,
 	}, nil
 }
 
