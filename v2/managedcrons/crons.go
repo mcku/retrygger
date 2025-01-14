@@ -31,6 +31,8 @@ type MC struct {
 	configFetcher func() (*jobmgmt.JobConfig, error)
 	logWriter     logFunc
 	currentConfig *jobmgmt.JobConfig
+	// each cron can run with its own param set. caller needs to specify this when initializing
+	runtimeParamBuilder func() string
 }
 
 func NewManagedCron(
@@ -40,14 +42,16 @@ func NewManagedCron(
 	currentConfig *jobmgmt.JobConfig,
 	logWriter logFunc,
 	providerAddr string,
+	runtimeParamBuilder func() string,
 ) *MC {
 	return &MC{
-		cronName:      cronName,
-		trigger:       trigger,
-		configFetcher: configFetcher,
-		currentConfig: currentConfig,
-		logWriter:     logWriter,
-		providerAddr:  providerAddr,
+		cronName:            cronName,
+		trigger:             trigger,
+		configFetcher:       configFetcher,
+		currentConfig:       currentConfig,
+		logWriter:           logWriter,
+		providerAddr:        providerAddr,
+		runtimeParamBuilder: runtimeParamBuilder,
 	}
 }
 
